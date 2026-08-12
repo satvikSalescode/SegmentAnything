@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from threading import Lock
 
 import numpy as np
+import torch
 from PIL import Image
 
 from backend.config import DEVICE, SAM2_CHECKPOINT_ID as CHECKPOINT_ID
