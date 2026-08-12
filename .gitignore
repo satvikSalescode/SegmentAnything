@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+backend/work/
+.DS_Store
+
+# Growing annotation output and the trained checkpoint - data, not code.
+# Track these separately (backup/cloud storage) once the project scales up.
+# (dataset_writer.py recreates the train/valid/test/images,labels skeleton
+# and data.yaml automatically on first write, so nothing is lost by ignoring this.)
+dataset/
+model/*.pth

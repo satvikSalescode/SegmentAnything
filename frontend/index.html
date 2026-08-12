@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>SKU Annotation Tool</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<header>
+  <h1>SKU Annotation Tool</h1>
+  <span id="counts"></span>
+  <button id="undo-btn" disabled>Undo last add</button>
+  <button id="add-mode-btn" disabled>Add missed object</button>
+  <button id="draw-mode-btn" disabled>Draw box manually</button>
+  <select id="split-select">
+    <option value="train" selected>train</option>
+    <option value="valid">valid</option>
+    <option value="test">test</option>
+  </select>
+  <button id="discard-btn" class="danger" disabled>Cancel / new image</button>
+  <button id="submit-btn" class="primary" disabled>Submit</button>
+</header>
+
+<main>
+  <div id="drop-zone">Click or drag an image here to upload</div>
+  <input id="file-input" type="file" accept="image/*" style="display:none" />
+
+  <div id="canvas-wrap" style="display:none">
+    <canvas id="canvas"></canvas>
+    <div id="click-panel" class="hidden">
+      <select id="class-select">
+        <option value="0">sku</option>
+        <option value="1">price_tag</option>
+      </select>
+      <button id="confirm-btn" class="primary">Confirm</button>
+      <button id="cancel-btn">Cancel</button>
+    </div>
+  </div>
+
+  <div class="hint" id="hint" style="display:none">
+    <span id="legend">
+      <span><span class="swatch" style="background:#0a84ff"></span> sku (RF-DETR)</span>
+      <span><span class="swatch" style="background:#30d158"></span> price_tag (RF-DETR)</span>
+      <span><span class="swatch" style="background:#ff9f0a"></span> human-added</span>
+      <span><span class="swatch" style="background:#ffd60a"></span> awaiting confirmation</span>
+    </span>
+    <div style="margin-top:6px">
+      Click any confirmed box (RF-DETR or human-added) to remove it - it disappears
+      immediately (click the same spot again to bring it back).
+      Use "Add missed object", then click on a missed SKU/price tag (shift+click adds a
+      negative point to exclude a region from the mask). If SAM's proposed box (yellow,
+      dashed) isn't quite right, drag its corner/edge handles to resize it or drag its
+      body to move it before hitting Confirm. If it's way off, use "Draw box manually"
+      instead and drag a rectangle by hand - same handles, class picker, and
+      Confirm/Cancel apply either way.
+    </div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

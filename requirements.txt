@@ -1,0 +1,25 @@
+# Core web app
+fastapi==0.118.0
+uvicorn[standard]==0.37.0
+python-multipart==0.0.20
+pydantic==2.11.7
+PyYAML==6.0.2
+
+# RF-DETR inference (same version used to train sku_and_price_tag.pth's family)
+rfdetr==1.6.5.post0
+supervision==0.27.0.post2
+pycocotools==2.0.11
+
+# SAM3 (via Hugging Face transformers integration - required for Apple Silicon,
+# the native facebookresearch/sam3 repo is CUDA-only and will not run on this Mac)
+transformers>=5.0
+accelerate>=1.0
+huggingface_hub>=0.27
+
+# Image utilities
+opencv-python-headless==4.10.0.84
+pillow>=11.0
+numpy>=2.0,<3.0
+
+# torch/torchvision intentionally unpinned here - installed separately for the
+# correct Apple Silicon (MPS) build, see README.md setup steps.
