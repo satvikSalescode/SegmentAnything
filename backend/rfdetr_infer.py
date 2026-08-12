@@ -8,8 +8,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from threading import Lock
 
-import torch
-
 from backend.config import CHECKPOINT_PATH, CLASS_NAMES, DETECTION_THRESHOLD, DEVICE
 
 _model = None
@@ -24,12 +22,6 @@ class Detection:
     score: float
 
 
-def _pick_device(requested: str) -> str:
-    if requested == "mps" and not torch.backends.mps.is_available():
-        return "cpu"
-    return requested
-
-
 def get_model():
     global _model
     if _model is None:
@@ -37,9 +29,8 @@ def get_model():
             if _model is None:
                 from rfdetr import RFDETRLarge
 
-                device = _pick_device(DEVICE)
                 _model = RFDETRLarge(
-                    device=device,
+                    device=DEVICE,
                     pretrain_weights=str(CHECKPOINT_PATH),
                     num_classes=len(CLASS_NAMES),
                 )

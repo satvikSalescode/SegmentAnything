@@ -10,7 +10,17 @@ CLASS_NAMES = ["sku", "price_tag"]
 WORK_DIR = PKG_ROOT / "backend" / "work"
 DATASET_DIR = PKG_ROOT / "dataset"
 
-DEVICE = "mps"  # falls back to cpu automatically inside each infer module if mps is unavailable
+def _detect_device() -> str:
+    import torch
+
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
+
+
+DEVICE = _detect_device()  # cuda on the RunPod GPU pod, mps on this Mac, cpu otherwise
 DETECTION_THRESHOLD = 0.55
 
 # Click-to-segment backend. "sam3" needs approved gated access to facebook/sam3

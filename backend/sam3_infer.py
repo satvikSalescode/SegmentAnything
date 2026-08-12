@@ -21,7 +21,6 @@ from dataclasses import dataclass
 from threading import Lock
 
 import numpy as np
-import torch
 from PIL import Image
 
 from backend.config import DEVICE, SAM3_CHECKPOINT_ID as CHECKPOINT_ID
@@ -46,12 +45,6 @@ class SegmentResult:
     score: float
 
 
-def _pick_device(requested: str) -> str:
-    if requested == "mps" and not torch.backends.mps.is_available():
-        return "cpu"
-    return requested
-
-
 def get_model_and_processor():
     global _model, _processor
     if _model is None or _processor is None:
@@ -59,11 +52,10 @@ def get_model_and_processor():
             if _model is None or _processor is None:
                 from transformers import Sam3TrackerModel, Sam3TrackerProcessor
 
-                device = _pick_device(DEVICE)
                 try:
                     _processor = Sam3TrackerProcessor.from_pretrained(CHECKPOINT_ID)
                     _model = Sam3TrackerModel.from_pretrained(
-                        CHECKPOINT_ID, device_map=device
+                        CHECKPOINT_ID, device_map=DEVICE
                     )
                     _model.eval()
                 except Exception as e:  # noqa: BLE001
