@@ -21,5 +21,8 @@ opencv-python-headless==4.10.0.84
 pillow>=11.0
 numpy>=2.0,<3.0
 
+# S3 dataset storage (optional - only used when AWS_ACCESS_KEY_ID etc. are set)
+boto3>=1.34
+
 # torch/torchvision intentionally unpinned here - installed separately for the
 # correct Apple Silicon (MPS) build, see README.md setup steps.

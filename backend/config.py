@@ -21,3 +21,11 @@ SEGMENTATION_BACKEND = "sam2"
 
 SAM3_CHECKPOINT_ID = "facebook/sam3"
 SAM2_CHECKPOINT_ID = "facebook/sam2.1-hiera-small"
+
+# Dataset storage. If AWS_ACCESS_KEY_ID (etc.) is present in the environment,
+# save_annotation() writes straight to S3 and skips DATASET_DIR entirely - see
+# backend/dataset_writer.py and backend/s3_sync.py. Local dev without AWS
+# credentials configured falls back to DATASET_DIR untouched.
+S3_BUCKET = "scai-vision-dev"
+S3_PREFIX = "dataset_rf"
+

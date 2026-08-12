@@ -123,13 +123,19 @@ async def segment(req: SegmentRequest) -> SegmentResponse:
 async def submit(req: SubmitRequest) -> SubmitResponse:
     session = _get_session(req.image_id)
 
-    result = await run_in_threadpool(
-        dataset_writer.save_annotation,
-        split=req.split,
-        source_image_path=str(session["path"]),
-        image_filename=session["filename"],
-        boxes=[{"class_id": b.class_id, "bbox_xyxy": b.bbox_xyxy} for b in req.boxes],
-    )
+    try:
+        result = await run_in_threadpool(
+            dataset_writer.save_annotation,
+            split=req.split,
+            source_image_path=str(session["path"]),
+            image_filename=session["filename"],
+            boxes=[{"class_id": b.class_id, "bbox_xyxy": b.bbox_xyxy} for b in req.boxes],
+        )
+    except Exception as e:  # noqa: BLE001 - S3/boto3 can raise many distinct types
+        raise HTTPException(
+            status_code=502,
+            detail=f"Failed to save annotation - nothing was written, please retry. ({e})",
+        ) from e
 
     kept_from_rfdetr = sum(1 for b in req.boxes if b.source == "rfdetr")
     # "human" (SAM click) and "manual" (hand-drawn box) both count as human-added
