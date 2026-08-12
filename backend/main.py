@@ -25,13 +25,17 @@ from backend.schemas import (
 
 FRONTEND_DIR = PKG_ROOT / "frontend"
 
+# Must exist before app.mount() below (StaticFiles checks at import time, which
+# runs before the lifespan hook ever fires) - matters on a fresh clone where
+# this directory doesn't exist yet, e.g. a freshly provisioned deployment.
+WORK_DIR.mkdir(parents=True, exist_ok=True)
+
 # image_id -> {"path": Path, "filename": str, "width": int, "height": int}
 _sessions: dict[str, dict] = {}
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    WORK_DIR.mkdir(parents=True, exist_ok=True)
     rfdetr_infer.warm_up()
     yield
 
