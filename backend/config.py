@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 PKG_ROOT = Path(__file__).resolve().parent.parent
@@ -10,7 +11,16 @@ CLASS_NAMES = ["sku", "price_tag"]
 WORK_DIR = PKG_ROOT / "backend" / "work"
 DATASET_DIR = PKG_ROOT / "dataset"
 
+
 def _detect_device() -> str:
+    # FORCE_DEVICE lets you override auto-detection - e.g. a laptop with a
+    # tiny-VRAM discrete GPU (2GB+ old-generation cards) can have CUDA
+    # "available" per the driver but OOM-crash loading these models, where
+    # CPU would at least run (slowly, predictably) instead of erroring.
+    forced = os.environ.get("FORCE_DEVICE")
+    if forced:
+        return forced
+
     import torch
 
     if torch.cuda.is_available():
